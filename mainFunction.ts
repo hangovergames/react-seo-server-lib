@@ -23,11 +23,12 @@ import RequestServer from "../../nor/ts/RequestServer";
 import RequestRouter from "../../nor/ts/requestServer/RequestRouter";
 import Headers from "../../nor/ts/request/Headers";
 import HttpServerController from "./controller/HttpServerController";
+import { isString } from "../../nor/ts/modules/lodash";
 
 const LOG = LogService.createLogger('main');
 
 export async function main (
-    args: string[] = []
+    args: any[] = []
 ) : Promise<ExitStatus> {
 
     let server : HTTP.Server | undefined;
@@ -41,7 +42,7 @@ export async function main (
         const appComponent : string | undefined = args.shift();
         const initFile     : string | undefined = args.shift();
 
-        if ( !appDir || !appComponent ) {
+        if ( !isString(appDir) || !appComponent ) {
             LOG.error(`USAGE: ${BACKEND_SCRIPT_NAME} APP_DIR APP_COMPONENT_FILE`);
             return;
         }
@@ -71,7 +72,7 @@ export async function main (
             require(initFile);
         }
 
-        const App = require(appComponent);
+        const App = isString(appComponent) ? require(appComponent) : appComponent;
 
         const httpController = new HttpServerController(
             appDir,

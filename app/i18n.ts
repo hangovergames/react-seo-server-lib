@@ -2,10 +2,10 @@
 
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-import TRANSLATIONS from "../fi/palvelinkauppa/translations";
-import { FRONTEND_DEFAULT_LANGUAGE } from "../constants/frontend";
-import TranslationUtils from "../fi/palvelinkauppa/utils/TranslationUtils";
-import LogService from "../fi/nor/ts/LogService";
+import TRANSLATIONS from "../../../palvelinkauppa/translations";
+import { FRONTEND_DEFAULT_LANGUAGE } from "../../../palvelinkauppa/constants/frontend";
+import TranslationUtils from "../../../palvelinkauppa/utils/TranslationUtils";
+import LogService from "../../../nor/ts/LogService";
 
 const LOG = LogService.createLogger('ssr/i18n');
 

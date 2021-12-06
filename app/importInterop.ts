@@ -4,6 +4,7 @@ import Module from 'module';
 
 const {require: oldRequire} = Module.prototype;
 
+// @ts-ignore
 Module.prototype.require = function hijacked (file: string) {
     console.debug(`Loading 2: "${file}"`);
     // noinspection JSVoidFunctionReturnValueUsed
