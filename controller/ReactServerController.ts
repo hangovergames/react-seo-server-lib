@@ -5,6 +5,7 @@ import PATH from "path";
 import { FileSystemService } from "../services/FileSystemService";
 import LogService from "../../../nor/ts/LogService";
 import StaticReactAppService from "../services/StaticReactAppService";
+import { Helmet, HelmetData } from "react-helmet";
 
 const LOG = LogService.createLogger('ReactServerController');
 
@@ -52,11 +53,23 @@ export default class ReactServerController {
         const appString : string = StaticReactAppService.renderString(url, App);
         // LOG.debug(`_renderHtmlString: appString: `, appString);
 
+        const helmet : HelmetData = Helmet.renderStatic();
+
         const rootDivId = 'root';
 
+        // noinspection HtmlRequiredLangAttribute
         return htmlString.replace(
-            ReactServerController._createDivTag(rootDivId),
-            ReactServerController._createDivTag(rootDivId, appString)
+            this._createDivTag(rootDivId),
+            this._createDivTag(rootDivId, appString)
+        ).replace(
+            /<html[^>]*>/,
+            `<html ${helmet.htmlAttributes.toString()}>`
+        ).replace(
+            /<title>.*<\/title>/,
+            helmet.title.toString()
+        ).replace(
+            /<body[^>]*>/,
+            `<html ${helmet.bodyAttributes.toString()}>`
         );
 
     }
