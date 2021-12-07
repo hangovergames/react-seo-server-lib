@@ -28,9 +28,11 @@ export default class HttpServerController {
         res    : ServerResponse,
     ) {
 
-        const url = req.url;
+        let url = undefined;
 
         try {
+
+            url = req.url;
 
             await this._waitUntilRequestEnd(req);
 

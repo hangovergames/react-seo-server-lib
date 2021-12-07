@@ -84,7 +84,22 @@ export async function main (
                 req : IncomingMessage,
                 res : ServerResponse
             ) => {
-                httpController.handleRequest(req, res);
+                try {
+                    httpController.handleRequest(req, res).catch(err => {
+                        LOG.error(`Unexpected exception from promise handler caught: `, err);
+                    }).finally( () => {
+                        if (!res.writableEnded) {
+                            LOG.warn(`"${req.method} ${req.url}": Warning! Async request handler did not close the response.`);
+                            res.end();
+                        }
+                    });
+                } catch (err) {
+                    LOG.error(`Exception caught: `, err);
+                    if (!res.writableEnded) {
+                        LOG.warn(`"${req.method} ${req.url}": Warning! Request handler did not close the response.`);
+                        res.end();
+                    }
+                }
             }
         );
 
