@@ -21,6 +21,7 @@ export default class ReactServerController {
 
         const indexFile = PATH.resolve(appDir, indexFileName);
 
+        LOG.debug(`Reading static HTML file for "${url}"`);
         let htmlString : string = '';
         try {
             htmlString = await FileSystemService.readTextFile(indexFile);
@@ -29,6 +30,7 @@ export default class ReactServerController {
             return ResponseEntity.internalServerError<string>().body('Internal Server Error');
         }
 
+        LOG.debug(`Rendering ReactJS app for "${url}"`);
         let bodyString : string = '';
         try {
             bodyString = ReactServerController._renderHtmlString(url, htmlString, App);
@@ -38,14 +40,17 @@ export default class ReactServerController {
         }
 
         if (HttpService.hasOpenRequests()) {
+            LOG.debug(`Waiting for HttpService to load resources for "${url}"`);
             await HttpService.waitUntilNoOpenRequests();
+            LOG.debug(`Re-rendering after HTTP requests for "${url}"`);
             try {
                 bodyString = ReactServerController._renderHtmlString(url, htmlString, App);
             } catch (err) {
                 LOG.error(`Could not render "${url}":`, err);
                 return ResponseEntity.internalServerError<string>().body('Internal Server Error');
             }
-
+        } else {
+            LOG.debug(`HttpService was not loading any resources for "${url}"`);
         }
 
         return ResponseEntity.ok<string>().body( bodyString );
