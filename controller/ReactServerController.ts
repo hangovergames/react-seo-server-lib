@@ -45,12 +45,12 @@ export default class ReactServerController {
         App: any
     ) : string {
 
-        LOG.debug(`_renderHtmlString: typeof url: `, typeof url);
-        LOG.debug(`_renderHtmlString: typeof htmlString: `, typeof htmlString);
-        LOG.debug(`_renderHtmlString: typeof App: `, typeof App);
+        // LOG.debug(`_renderHtmlString: typeof url: `, typeof url);
+        // LOG.debug(`_renderHtmlString: typeof htmlString: `, typeof htmlString);
+        // LOG.debug(`_renderHtmlString: typeof App: `, typeof App);
 
         const appString : string = StaticReactAppService.renderString(url, App);
-        LOG.debug(`_renderHtmlString: appString: `, appString);
+        // LOG.debug(`_renderHtmlString: appString: `, appString);
 
         const rootDivId = 'root';
 

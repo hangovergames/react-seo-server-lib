@@ -12,6 +12,16 @@ export const BACKEND_SCRIPT_NAME     : string   = parseNonEmptyString(process?.e
 export const BACKEND_PORT            : number | string | false = normalizePort(process?.env?.PORT || '3000');
 
 /**
+ * This is optional address to Palvelinkauppa backend.
+ *
+ * Path /api/* will be redirected to that address if this variable is defined.
+ *
+ * This is only useful in the development, since Nginx will be redirecting traffic in a production
+ * environment.
+ */
+export const BACKEND_API_URL : string | undefined = parseNonEmptyString(process?.env?.BACKEND_API_URL) ?? undefined;
+
+/**
  * Normalize a port into a number, string, or false.
  */
 function normalizePort (val : string) : number | string | false {

@@ -10,17 +10,39 @@ const LOG = LogService.createLogger('HttpServerController');
 
 export default class HttpServerController {
 
-    private readonly _appDir     : string;
-    private readonly _fileServer : STATIC.Server;
-    private readonly _App        : any;
+    private readonly _appDir      : string;
+    private readonly _fileServer  : STATIC.Server;
+    private readonly _App         : any;
+    private readonly _apiBasePath : string | undefined;
+    private readonly _apiUrl      : string | undefined;
+    private readonly _proxy       : any    | undefined;
 
     public constructor (
-        appDir : string,
-        App    : any
+        appDir  : string,
+        App     : any,
+        apiUrl ?: string
     ) {
+
         this._appDir     = appDir;
         this._App        = App;
         this._fileServer = new STATIC.Server(appDir);
+
+        if (apiUrl !== undefined) {
+            this._apiBasePath = '/api';
+            this._apiUrl = apiUrl;
+            const httpProxy = require('http-proxy');
+            this._proxy = httpProxy.createProxyServer(
+                {
+                    autoRewrite: true,
+                    proxyTimeout: 30*1000,
+                    timeout: 30*1000
+                }
+            );
+            LOG.info(`Enabled docroot "${this._appDir}" with "${this._apiBasePath}" passed to "${this._apiUrl}"`);
+        } else {
+            LOG.info(`Enabled docroot "${this._appDir}"`);
+        }
+
     }
 
     public async handleRequest (
@@ -34,9 +56,18 @@ export default class HttpServerController {
 
             url = req.url;
 
-            await this._waitUntilRequestEnd(req);
+            if ( this._proxy && url.startsWith(this._apiBasePath) ) {
 
-            await this._serveUsingStaticServer(req, res);
+                LOG.debug(`Routing request "${url}" to "${this._apiUrl}"`)
+                await this._proxyRequestToTarget(req, res, this._apiUrl, this._apiBasePath);
+
+            } else {
+
+                await this._waitUntilRequestEnd(req);
+
+                await this._serveUsingStaticServer(req, res);
+
+            }
 
         } catch (err) {
 
@@ -134,6 +165,45 @@ export default class HttpServerController {
         LOG.info(`"${url}": ${statusCode}`);
         res.writeHead(statusCode);
         res.end(body);
+    }
+
+    /**
+     * Proxies the request to another address.
+     *
+     * Note! Call this method only from a code which tests that optional `this._proxy` exists.
+     *
+     * @param req
+     * @param res
+     * @param target Target to proxy the request
+     * @param basePath Base path to strip from the request
+     * @private
+     */
+    private async _proxyRequestToTarget (
+        req      : IncomingMessage,
+        res      : ServerResponse,
+        target   : string,
+        basePath : string
+    ) : Promise<void> {
+
+        return await new Promise( (resolve, reject) => {
+            try {
+
+                const url : string = `${req.url}`;
+                req.url = url.startsWith(basePath) ? url.substring(basePath.length) : url;
+
+                LOG.debug(`_proxyRequestToTarget: Routing "${req.url}" to "${target}"`)
+                this._proxy.web(req, res, {target}, (err: Error) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve();
+                    }
+                });
+            } catch (err) {
+                reject(err);
+            }
+        });
+
     }
 
 }

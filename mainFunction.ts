@@ -8,6 +8,7 @@ import ProcessUtils from "../../nor/ts/ProcessUtils";
 ProcessUtils.initEnvFromDefaultFiles();
 
 import {
+    BACKEND_API_URL,
     BACKEND_LOG_LEVEL,
     BACKEND_PORT,
     BACKEND_SCRIPT_NAME
@@ -61,7 +62,7 @@ export async function main (
         const Module = (ModuleM as any)?.default ?? ModuleM;
         const {require: oldRequire} = Module.prototype;
         Module.prototype.require = function hijacked (file: string) {
-            LOG.debug(`Loading 1: "${file}"`);
+            // LOG.debug(`Loading 1: "${file}"`);
             // noinspection JSVoidFunctionReturnValueUsed
             const result = oldRequire.apply(this, [file]);
             return result?.default ?? result;
@@ -76,7 +77,8 @@ export async function main (
 
         const httpController = new HttpServerController(
             appDir,
-            App
+            App,
+            BACKEND_API_URL
         );
 
         server = HTTP.createServer(
