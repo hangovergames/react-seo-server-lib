@@ -33,6 +33,7 @@ export default class ReactServerController {
             return ResponseEntity.internalServerError<string>().body('Internal Server Error');
         }
 
+        LOG.debug(`Updating FrontendCacheService for "${url}"`);
         await FrontendCacheService.initialize();
 
         LOG.debug(`Rendering ReactJS app for "${url}"`);

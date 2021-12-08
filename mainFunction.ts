@@ -8,6 +8,7 @@ import ProcessUtils from "../../nor/ts/ProcessUtils";
 ProcessUtils.initEnvFromDefaultFiles();
 
 import {
+    BACKEND_API_PROXY_URL,
     BACKEND_API_URL,
     BACKEND_LOG_LEVEL,
     BACKEND_PORT,
@@ -25,6 +26,7 @@ import RequestRouter from "../../nor/ts/requestServer/RequestRouter";
 import Headers from "../../nor/ts/request/Headers";
 import HttpServerController from "./controller/HttpServerController";
 import { isString } from "../../nor/ts/modules/lodash";
+import { HttpService } from "../../palvelinkauppa/services/HttpService";
 
 const LOG = LogService.createLogger('main');
 
@@ -68,6 +70,9 @@ export async function main (
             return result?.default ?? result;
         };
 
+        if (BACKEND_API_URL) {
+            HttpService.setBaseUrl(BACKEND_API_URL);
+        }
 
         if (initFile) {
             require(initFile);
@@ -78,7 +83,7 @@ export async function main (
         const httpController = new HttpServerController(
             appDir,
             App,
-            BACKEND_API_URL
+            BACKEND_API_PROXY_URL
         );
 
         server = HTTP.createServer(
