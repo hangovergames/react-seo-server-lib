@@ -8,6 +8,7 @@ import StaticReactAppService from "../services/StaticReactAppService";
 import { Helmet, HelmetData } from "react-helmet";
 import { HttpService } from "../../../palvelinkauppa/services/HttpService";
 import HtmlManager from "../services/HtmlManager";
+import { VoidCallback } from "../../../nor/ts/interfaces/callbacks";
 
 const LOG = LogService.createLogger('ReactServerController');
 
@@ -39,6 +40,10 @@ export default class ReactServerController {
             LOG.error(`Could not render "${url}":`, err);
             return ResponseEntity.internalServerError<string>().body('Internal Server Error');
         }
+
+        // Waits for next stick so that we make sure there isn't HTTP requests triggered
+        const [promise, cancelWait] = this._waitUntilMs(1);
+        await promise;
 
         if (HttpService.hasOpenRequests()) {
             LOG.debug(`Waiting for HttpService to load resources for "${url}"`);
@@ -88,6 +93,48 @@ export default class ReactServerController {
         }
         return manager.toString();
 
+    }
+
+    private static _waitUntilMs (time: number) : [Promise<void>, VoidCallback] {
+        let rejectPromise : any | undefined = undefined;
+        let timeout : any | undefined = undefined;
+        const cancel : VoidCallback = () => {
+            if (rejectPromise !== undefined) {
+                rejectPromise('cancel');
+                rejectPromise = undefined;
+            }
+            if (timeout !== undefined) {
+                clearTimeout(timeout);
+                timeout = undefined;
+            }
+        };
+        const promise : Promise<void> = new Promise((resolve, reject) => {
+            try {
+                rejectPromise = reject;
+                timeout = setTimeout(() => {
+                    try {
+
+                        if (timeout) {
+                            timeout = undefined;
+                        }
+
+                        if (rejectPromise) {
+                            rejectPromise = undefined;
+                        }
+
+                        resolve();
+
+                    } catch (err) {
+                        reject(err);
+                        rejectPromise = undefined;
+                    }
+                }, time);
+            } catch(err) {
+                reject(err);
+                rejectPromise = undefined;
+            }
+        });
+        return [ promise, cancel ];
     }
 
 }
