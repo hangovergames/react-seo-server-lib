@@ -6,6 +6,7 @@ import { FileSystemService } from "../services/FileSystemService";
 import LogService from "../../../nor/ts/LogService";
 import StaticReactAppService from "../services/StaticReactAppService";
 import { Helmet, HelmetData } from "react-helmet";
+import HtmlManager from "../services/HtmlManager";
 
 const LOG = LogService.createLogger('ReactServerController');
 
@@ -46,36 +47,31 @@ export default class ReactServerController {
         App: any
     ) : string {
 
-        // LOG.debug(`_renderHtmlString: typeof url: `, typeof url);
-        // LOG.debug(`_renderHtmlString: typeof htmlString: `, typeof htmlString);
-        // LOG.debug(`_renderHtmlString: typeof App: `, typeof App);
+        let appString : string | undefined;
+        let helmet    : HelmetData;
+        try {
+            appString = StaticReactAppService.renderString(url, App);
+            helmet = Helmet.renderStatic();
+        } catch (err) {
+            LOG.error(`Error while rendering app: `, err);
+            helmet = Helmet.renderStatic(); // Must free up memory to prevent memory leaks in Helmet
+        }
+        const manager : HtmlManager = new HtmlManager(htmlString);
+        manager.setHtmlAttributes(helmet.htmlAttributes.toString());
+        manager.setBodyAttributes(helmet.bodyAttributes.toString());
+        manager.setTitle(helmet.title.toString());
+        manager.setBase(helmet.base.toString());
+        manager.appendMeta(helmet.meta.toString());
+        manager.appendLink(helmet.link.toString());
+        manager.appendStyle(helmet.style.toString());
+        manager.appendScript(helmet.script.toString());
+        manager.replaceNoScript(helmet.noscript.toString());
+        if (appString) {
+            manager.replaceContentById('div', 'root', appString);
+        }
+        return manager.toString();
 
-        const appString : string = StaticReactAppService.renderString(url, App);
-        // LOG.debug(`_renderHtmlString: appString: `, appString);
 
-        const helmet : HelmetData = Helmet.renderStatic();
-
-        const rootDivId = 'root';
-
-        // noinspection HtmlRequiredLangAttribute
-        return htmlString.replace(
-            this._createDivTag(rootDivId),
-            this._createDivTag(rootDivId, appString)
-        ).replace(
-            /<html[^>]*>/,
-            `<html ${helmet.htmlAttributes.toString()}>`
-        ).replace(
-            /<title>.*<\/title>/,
-            helmet.title.toString()
-        ).replace(
-            /<body[^>]*>/,
-            `<html ${helmet.bodyAttributes.toString()}>`
-        );
-
-    }
-
-    private static _createDivTag (idName: string, content?: string) {
-        return `<div id="${idName}">${content ? content : ''}</div>`;
     }
 
 }
