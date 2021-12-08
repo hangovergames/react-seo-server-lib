@@ -4,9 +4,9 @@ import { default as ReactDOMServer } from "react-dom/server";
 import { StaticRouter } from "react-router-dom/server";
 import { default as i18n } from "i18next";
 import { I18nextProvider } from 'react-i18next';
-// import LogService from "../../../nor/ts/LogService";
+import LogService from "../../../nor/ts/LogService";
 
-// const LOG = LogService.createLogger('StaticReactAppService');
+const LOG = LogService.createLogger('StaticReactAppService');
 
 export default class StaticReactAppService {
 
@@ -15,8 +15,7 @@ export default class StaticReactAppService {
         App         : any
     ) : string {
 
-        // LOG.debug(`renderString: typeof url: `, typeof url);
-        // LOG.debug(`renderString: typeof App: `, typeof App);
+        LOG.debug(`renderString: url: `, url);
 
         return ReactDOMServer.renderToString(
             <I18nextProvider i18n={i18n}>
