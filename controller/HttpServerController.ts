@@ -199,6 +199,7 @@ export default class HttpServerController {
                         resolve();
                     }
                 });
+
             } catch (err) {
                 reject(err);
             }
