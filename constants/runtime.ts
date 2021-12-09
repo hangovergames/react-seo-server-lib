@@ -19,13 +19,18 @@ export const BACKEND_PORT            : number | string | false = normalizePort(p
 export const BACKEND_API_URL : string | undefined = parseNonEmptyString(process?.env?.BACKEND_API_URL) ?? undefined;
 
 /**
+ * Enable local proxy.
+ */
+export const BACKEND_API_PROXY_ENABLED : boolean = `${(process?.env?.BACKEND_API_PROXY_ENABLED ?? 'true')}`.toLowerCase() === 'true';
+
+/**
  * This is optional address to Palvelinkauppa backend for local proxy.
  *
  * Path /api/* will be redirected to that address if this variable is defined.
  *
  * This is only useful in the development, since in the production the Nginx will be redirecting traffic.
  */
-export const BACKEND_API_PROXY_URL : string | undefined = parseNonEmptyString(process?.env?.BACKEND_API_PROXY_URL) ?? BACKEND_API_URL;
+export const BACKEND_API_PROXY_URL : string | undefined = BACKEND_API_PROXY_ENABLED ? (parseNonEmptyString(process?.env?.BACKEND_API_PROXY_URL) ?? BACKEND_API_URL) : undefined;
 
 /**
  * Normalize a port into a number, string, or false.
