@@ -1,21 +1,24 @@
-# @hangovergames/ssr
+# @heusalagroup/fi.hg.ssr
 
-Git Module TypeScript Library for ReactJs Server Side Rendering
+TypeScript Library for ReactJS Server Side Rendering as a Git Submodule.
 
-```shell
-mkdir -p src/fi/hangovergames
-git submodule add git@github.com:hangovergames/ssr.git src/fi/hangovergames/ssr
-git config -f .gitmodules submodule.src/fi/hangovergames/ssr.branch main
-```
-
-Our dependency:
+Use it as a git submodule:
 
 ```shell
-mkdir -p src/fi/nor
-git submodule add git@github.com:sendanor/typescript.git src/fi/nor/ts
-git config -f .gitmodules submodule.src/fi/nor/ts.branch main
+mkdir -p src/fi/hg
+git submodule add git@github.com:heusalagroup/fi.hg.ssr.git src/fi/hg/ssr
+git config -f .gitmodules submodule.src/fi/hg/ssr.branch main
 ```
 
-You need Lodash, too: `npm install --save-dev lodash '@types/lodash'`
+...and install also our core module:
 
-Also see [ssr-server](https://github.com/hangovergames/ssr-server) for other dependencies.
+```shell
+git submodule add git@github.com:heusalagroup/fi.hg.core.git src/fi/hg/core
+git config -f .gitmodules submodule.src/fi/hg/core.branch main
+```
+
+You also will need Lodash: 
+
+```shell
+npm install --save-dev lodash '@types/lodash'
+```
