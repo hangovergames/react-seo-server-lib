@@ -2,7 +2,7 @@
 
 import HTTP, { IncomingMessage, ServerResponse } from 'http';
 
-import ProcessUtils from "../../nor/ts/ProcessUtils";
+import ProcessUtils from "../../hg/core/ProcessUtils";
 
 // Must be first import to define environment variables before anything else
 ProcessUtils.initEnvFromDefaultFiles();
@@ -14,18 +14,18 @@ import {
     BACKEND_PORT,
     BACKEND_SCRIPT_NAME
 } from "./constants/runtime";
-import LogService from "../../nor/ts/LogService";
+import LogService from "../../hg/core/LogService";
 
 LogService.setLogLevel(BACKEND_LOG_LEVEL);
 
 import ExitStatus from "./types/ExitStatus";
-import LogLevel from "../../nor/ts/types/LogLevel";
-import RequestClient from "../../nor/ts/RequestClient";
-import RequestServer from "../../nor/ts/RequestServer";
-import RequestRouter from "../../nor/ts/requestServer/RequestRouter";
-import Headers from "../../nor/ts/request/Headers";
+import LogLevel from "../../hg/core/types/LogLevel";
+import RequestClient from "../../hg/core/RequestClient";
+import RequestServer from "../../hg/core/RequestServer";
+import RequestRouter from "../../hg/core/requestServer/RequestRouter";
+import Headers from "../../hg/core/request/Headers";
 import HttpServerController from "./controller/HttpServerController";
-import { isString } from "../../nor/ts/modules/lodash";
+import { isString } from "../../hg/core/modules/lodash";
 import { HttpService } from "../../palvelinkauppa/services/HttpService";
 
 const LOG = LogService.createLogger('main');

@@ -1,7 +1,7 @@
 // Copyright (c) 2021. Heusala Group Oy <info@heusalagroup.fi>. All rights reserved.
 
 import FS from "fs";
-import LogService from "../../../nor/ts/LogService";
+import LogService from "../../../hg/core/LogService";
 import ErrnoException = NodeJS.ErrnoException;
 
 const LOG = LogService.createLogger('FileSystemService');

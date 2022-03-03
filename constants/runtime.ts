@@ -1,7 +1,7 @@
 // Copyright (c) 2021. Heusala Group Oy <info@heusalagroup.fi>. All rights reserved.
 
-import { parseBoolean, parseNonEmptyString } from "../../../nor/ts/modules/lodash";
-import LogLevel, { parseLogLevel } from "../../../nor/ts/types/LogLevel";
+import { parseBoolean, parseNonEmptyString } from "../../../hg/core/modules/lodash";
+import LogLevel, { parseLogLevel } from "../../../hg/core/types/LogLevel";
 import {
     BUILD_COMMAND_NAME,
     BUILD_LOG_LEVEL

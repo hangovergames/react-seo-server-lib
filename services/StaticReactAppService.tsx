@@ -4,7 +4,7 @@ import { default as ReactDOMServer } from "react-dom/server";
 import { StaticRouter } from "react-router-dom/server";
 import { default as i18n } from "i18next";
 import { I18nextProvider } from 'react-i18next';
-import LogService from "../../../nor/ts/LogService";
+import LogService from "../../../hg/core/LogService";
 
 const LOG = LogService.createLogger('StaticReactAppService');
 

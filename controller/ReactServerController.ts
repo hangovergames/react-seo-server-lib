@@ -1,13 +1,13 @@
 // Copyright (c) 2021. Heusala Group Oy <info@heusalagroup.fi>. All rights reserved.
 
-import ResponseEntity from "../../../nor/ts/request/ResponseEntity";
+import ResponseEntity from "../../../hg/core/request/ResponseEntity";
 import PATH from "path";
 import { FileSystemService } from "../services/FileSystemService";
-import LogService from "../../../nor/ts/LogService";
+import LogService from "../../../hg/core/LogService";
 import StaticReactAppService from "../services/StaticReactAppService";
 import { Helmet, HelmetData } from "react-helmet";
 import HtmlManager from "../services/HtmlManager";
-import { VoidCallback } from "../../../nor/ts/interfaces/callbacks";
+import { VoidCallback } from "../../../hg/core/interfaces/callbacks";
 import FrontendCacheService from "../../../palvelinkauppa/services/FrontendCacheService";
 // import { HttpService } from "../../../palvelinkauppa/services/HttpService";
 

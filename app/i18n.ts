@@ -5,7 +5,7 @@ import { initReactI18next } from "react-i18next";
 import TRANSLATIONS from "../../../palvelinkauppa/translations";
 import { FRONTEND_DEFAULT_LANGUAGE } from "../../../palvelinkauppa/constants/frontend";
 import TranslationUtils from "../../../palvelinkauppa/utils/TranslationUtils";
-import LogService from "../../../nor/ts/LogService";
+import LogService from "../../../hg/core/LogService";
 
 const LOG = LogService.createLogger('ssr/i18n');
 

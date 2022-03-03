@@ -6,7 +6,7 @@
 import {
     parseBoolean as _parseBoolean,
     parseNonEmptyString as _parseNonEmptyString
-} from "../../../nor/ts/modules/lodash";
+} from "../../../hg/core/modules/lodash";
 
 function parseBoolean (value : any) : boolean | undefined {
     if (value.startsWith('%'+'{') && value.endsWith('}')) return undefined;
