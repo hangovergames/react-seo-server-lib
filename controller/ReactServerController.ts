@@ -1,19 +1,18 @@
 // Copyright (c) 2021. Heusala Group Oy <info@heusalagroup.fi>. All rights reserved.
 
-import ResponseEntity from "../../../hg/core/request/ResponseEntity";
-import PATH from "path";
+import { PATH } from "path";
+import { ResponseEntity } from "../../../hg/core/request/ResponseEntity";
 import { FileSystemService } from "../services/FileSystemService";
-import LogService from "../../../hg/core/LogService";
-import StaticReactAppService from "../services/StaticReactAppService";
+import { LogService } from "../../../hg/core/LogService";
+import { StaticReactAppService } from "../services/StaticReactAppService";
 import { Helmet, HelmetData } from "react-helmet";
-import HtmlManager from "../services/HtmlManager";
+import { HtmlManager } from "../services/HtmlManager";
 import { VoidCallback } from "../../../hg/core/interfaces/callbacks";
-import FrontendCacheService from "../../../palvelinkauppa/services/FrontendCacheService";
-// import { HttpService } from "../../../palvelinkauppa/services/HttpService";
+import { FrontendCacheService } from "../../../app/services/FrontendCacheService";
 
 const LOG = LogService.createLogger('ReactServerController');
 
-export default class ReactServerController {
+export class ReactServerController {
 
     public static async handleReactRequest (
         url           : string,

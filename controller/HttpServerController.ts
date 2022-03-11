@@ -1,14 +1,14 @@
 // Copyright (c) 2021. Heusala Group Oy <info@heusalagroup.fi>. All rights reserved.
 
-import ReactServerController from "./ReactServerController";
-import ResponseEntity from "../../../hg/core/request/ResponseEntity";
-import LogService from "../../../hg/core/LogService";
+import { ReactServerController } from "./ReactServerController";
+import { ResponseEntity } from "../../../hg/core/request/ResponseEntity";
+import { LogService } from "../../../hg/core/LogService";
 import { IncomingMessage, ServerResponse } from "http";
-import STATIC from 'node-static';
+import { STATIC } from 'node-static';
 
 const LOG = LogService.createLogger('HttpServerController');
 
-export default class HttpServerController {
+export class HttpServerController {
 
     private readonly _appDir      : string;
     private readonly _fileServer  : STATIC.Server;

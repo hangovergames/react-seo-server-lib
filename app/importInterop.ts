@@ -1,6 +1,6 @@
 
 // Hijack require for TypeScript ES2020 interop
-import Module from 'module';
+import { Module } from 'module';
 
 const {require: oldRequire} = Module.prototype;
 

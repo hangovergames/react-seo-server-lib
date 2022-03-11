@@ -221,4 +221,4 @@ export function parseRunnerExitStatus (value: any): ExitStatus | undefined {
 
 }
 
-export default ExitStatus;
+

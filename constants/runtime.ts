@@ -1,7 +1,7 @@
 // Copyright (c) 2021. Heusala Group Oy <info@heusalagroup.fi>. All rights reserved.
 
 import { parseBoolean, parseNonEmptyString } from "../../../hg/core/modules/lodash";
-import LogLevel, { parseLogLevel } from "../../../hg/core/types/LogLevel";
+import { LogLevel,  parseLogLevel } from "../../../hg/core/types/LogLevel";
 import {
     BUILD_COMMAND_NAME,
     BUILD_LOG_LEVEL
@@ -12,7 +12,7 @@ export const BACKEND_SCRIPT_NAME     : string   = parseNonEmptyString(process?.e
 export const BACKEND_PORT            : number | string | false = normalizePort(process?.env?.PORT || '3000');
 
 /**
- * This is optional address to Palvelinkauppa backend for frontend's HttpService.
+ * This is optional address to the backend for frontend's HttpService.
  *
  * It is required for SSR frontend code to function correctly.
  */
@@ -24,7 +24,7 @@ export const BACKEND_API_URL : string | undefined = parseNonEmptyString(process?
 export const BACKEND_API_PROXY_ENABLED : boolean = `${(process?.env?.BACKEND_API_PROXY_ENABLED ?? 'true')}`.toLowerCase() === 'true';
 
 /**
- * This is optional address to Palvelinkauppa backend for local proxy.
+ * This is optional address to the backend for local proxy.
  *
  * Path /api/* will be redirected to that address if this variable is defined.
  *

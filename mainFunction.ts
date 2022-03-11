@@ -1,8 +1,8 @@
 // Copyright (c) 2021. Heusala Group Oy <info@heusalagroup.fi>. All rights reserved.
 
-import HTTP, { IncomingMessage, ServerResponse } from 'http';
+import { HTTP,  IncomingMessage, ServerResponse } from 'http';
 
-import ProcessUtils from "../../hg/core/ProcessUtils";
+import { ProcessUtils } from "../../hg/core/ProcessUtils";
 
 // Must be first import to define environment variables before anything else
 ProcessUtils.initEnvFromDefaultFiles();
@@ -14,17 +14,17 @@ import {
     BACKEND_PORT,
     BACKEND_SCRIPT_NAME
 } from "./constants/runtime";
-import LogService from "../../hg/core/LogService";
+import { LogService } from "../../hg/core/LogService";
 
 LogService.setLogLevel(BACKEND_LOG_LEVEL);
 
-import ExitStatus from "./types/ExitStatus";
-import LogLevel from "../../hg/core/types/LogLevel";
-import RequestClient from "../../hg/core/RequestClient";
-import RequestServer from "../../hg/core/RequestServer";
-import RequestRouter from "../../hg/core/requestServer/RequestRouter";
-import Headers from "../../hg/core/request/Headers";
-import HttpServerController from "./controller/HttpServerController";
+import { ExitStatus } from "./types/ExitStatus";
+import { LogLevel } from "../../hg/core/types/LogLevel";
+import { RequestClient } from "../../hg/core/RequestClient";
+import { RequestServer } from "../../hg/core/RequestServer";
+import { RequestRouter } from "../../hg/core/requestServer/RequestRouter";
+import { Headers } from "../../hg/core/request/Headers";
+import { HttpServerController } from "./controller/HttpServerController";
 import { isString } from "../../hg/core/modules/lodash";
 import { HttpService } from "../../palvelinkauppa/services/HttpService";
 
@@ -190,4 +190,4 @@ export async function main (
 
 }
 
-export default main;
+

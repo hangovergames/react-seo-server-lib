@@ -1,6 +1,6 @@
 // Copyright (c) 2021. Heusala Group Oy <info@heusalagroup.fi>. All rights reserved.
 
-import LogService from "../../../hg/core/LogService";
+import { LogService } from "../../../hg/core/LogService";
 
 const LOG = LogService.createLogger('HtmlManager');
 
@@ -157,4 +157,4 @@ export function isHtmlManager (value: any): value is HtmlManager {
     return value instanceof HtmlManager;
 }
 
-export default HtmlManager;
+
