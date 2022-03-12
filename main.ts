@@ -26,7 +26,7 @@ import { RequestRouter } from "../core/requestServer/RequestRouter";
 import { Headers } from "../core/request/Headers";
 import { HttpServerController } from "./controller/HttpServerController";
 import { isString } from "../core/modules/lodash";
-import { HttpService } from "../../palvelinkauppa/frontend/services/HttpService";
+import { HttpService } from "../core/HttpService";
 
 const LOG = LogService.createLogger('main');
 
