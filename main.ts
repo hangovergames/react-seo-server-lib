@@ -71,6 +71,7 @@ export async function main (
         };
 
         if (BACKEND_API_URL) {
+            LOG.debug(`Internal backend API set as: ${BACKEND_API_URL}`);
             HttpService.setBaseUrl(BACKEND_API_URL);
         }
 
