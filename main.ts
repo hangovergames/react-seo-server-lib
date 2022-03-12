@@ -73,6 +73,8 @@ export async function main (
         if (BACKEND_API_URL) {
             LOG.debug(`Internal backend API set as: ${BACKEND_API_URL}`);
             HttpService.setBaseUrl(BACKEND_API_URL);
+        } else {
+            LOG.warn(`Warning! No BACKEND_API_URL defined. HTTP calls may not work correctly.`);
         }
 
         if (initFile) {
