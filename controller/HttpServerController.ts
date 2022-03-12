@@ -1,17 +1,17 @@
 // Copyright (c) 2021. Heusala Group Oy <info@heusalagroup.fi>. All rights reserved.
 
-import { ReactServerController } from "./ReactServerController";
-import { ResponseEntity } from "../../../hg/core/request/ResponseEntity";
-import { LogService } from "../../../hg/core/LogService";
 import { IncomingMessage, ServerResponse } from "http";
-import { STATIC } from 'node-static';
+import { Server as StaticServer } from 'node-static';
+import { ResponseEntity } from "../../core/request/ResponseEntity";
+import { LogService } from "../../core/LogService";
+import { ReactServerController } from "./ReactServerController";
 
 const LOG = LogService.createLogger('HttpServerController');
 
 export class HttpServerController {
 
     private readonly _appDir      : string;
-    private readonly _fileServer  : STATIC.Server;
+    private readonly _fileServer  : StaticServer;
     private readonly _App         : any;
     private readonly _apiBasePath : string | undefined;
     private readonly _apiUrl      : string | undefined;
@@ -25,7 +25,7 @@ export class HttpServerController {
 
         this._appDir     = appDir;
         this._App        = App;
-        this._fileServer = new STATIC.Server(appDir);
+        this._fileServer = new StaticServer(appDir);
 
         if (apiUrl !== undefined) {
             this._apiBasePath = '/api';
