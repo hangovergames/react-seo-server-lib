@@ -8,7 +8,7 @@ import { StaticReactAppService } from "../services/StaticReactAppService";
 import { Helmet, HelmetData } from "react-helmet";
 import { HtmlManager } from "../services/HtmlManager";
 import { VoidCallback } from "../../core/interfaces/callbacks";
-import { FrontendCacheService } from "../../ui/services/FrontendCacheService";
+import { InitService } from "../../core/InitService";
 
 const LOG = LogService.createLogger('ReactServerController');
 
@@ -32,8 +32,8 @@ export class ReactServerController {
             return ResponseEntity.internalServerError<string>().body('Internal Server Error');
         }
 
-        LOG.debug(`Updating FrontendCacheService for "${url}"`);
-        await FrontendCacheService.initialize();
+        LOG.debug(`Initializing services for "${url}"`);
+        await InitService.initialize();
 
         LOG.debug(`Rendering ReactJS app for "${url}"`);
         let bodyString : string = '';
