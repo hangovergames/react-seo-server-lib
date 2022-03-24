@@ -5,6 +5,9 @@ import { Server as StaticServer } from 'node-static';
 import { ResponseEntity } from "../../core/request/ResponseEntity";
 import { LogService } from "../../core/LogService";
 import { ReactServerController } from "./ReactServerController";
+import { WELL_KNOWN_HG_HEALTH_CHECK_END_POINT } from "../../core/constants/wellKnown";
+import { startsWith } from "../../core/modules/lodash";
+import { createHealthCheckDTO } from "../../core/types/HealthCheckDTO";
 
 const LOG = LogService.createLogger('HttpServerController');
 
@@ -56,7 +59,16 @@ export class HttpServerController {
 
             url = req.url;
 
-            if ( this._proxy && url.startsWith(this._apiBasePath) ) {
+            if ( startsWith(url, WELL_KNOWN_HG_HEALTH_CHECK_END_POINT)) {
+
+                await this._waitUntilRequestEnd(req);
+
+                // FIXME: Call health check for proxy target
+                HttpServerController._writeResponseEntity(res, url, ResponseEntity.ok<string>(JSON.stringify(createHealthCheckDTO(true))) );
+                return;
+            }
+
+            if ( this._proxy && startsWith(url, this._apiBasePath) ) {
 
                 LOG.debug(`Routing request "${url}" to "${this._apiUrl}"`)
                 await this._proxyRequestToTarget(req, res, this._apiUrl, this._apiBasePath);
