@@ -30,3 +30,7 @@ git config -f .gitmodules submodule.src/fi/hg/core.branch main
 npm install --save-dev lodash '@types/lodash'
 ```
 
+### License
+
+Copyright (c) Heusala Group. All rights reserved. Licensed under the MIT License (the "[License](./LICENSE)");
+
