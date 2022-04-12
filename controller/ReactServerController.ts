@@ -1,14 +1,14 @@
-// Copyright (c) 2021. Heusala Group Oy <info@heusalagroup.fi>. All rights reserved.
+// Copyright (c) 2021-2022. Heusala Group Oy <info@heusalagroup.fi>. All rights reserved.
 
-import { PATH } from "path";
-import { ResponseEntity } from "../../../hg/core/request/ResponseEntity";
+import { resolve as pathResolve } from "path";
+import { ResponseEntity } from "../../core/request/ResponseEntity";
 import { FileSystemService } from "../services/FileSystemService";
-import { LogService } from "../../../hg/core/LogService";
+import { LogService } from "../../core/LogService";
 import { StaticReactAppService } from "../services/StaticReactAppService";
 import { Helmet, HelmetData } from "react-helmet";
 import { HtmlManager } from "../services/HtmlManager";
-import { VoidCallback } from "../../../hg/core/interfaces/callbacks";
-import { FrontendCacheService } from "../../../app/services/FrontendCacheService";
+import { VoidCallback } from "../../core/interfaces/callbacks";
+import { CacheService } from "../../core/CacheService";
 
 const LOG = LogService.createLogger('ReactServerController');
 
@@ -21,7 +21,7 @@ export class ReactServerController {
         indexFileName : string = './index.html'
     ) : Promise<ResponseEntity<string>> {
 
-        const indexFile = PATH.resolve(appDir, indexFileName);
+        const indexFile = pathResolve(appDir, indexFileName);
 
         LOG.debug(`Reading static HTML file for "${url}"`);
         let htmlString : string = '';
@@ -32,8 +32,8 @@ export class ReactServerController {
             return ResponseEntity.internalServerError<string>().body('Internal Server Error');
         }
 
-        LOG.debug(`Updating FrontendCacheService for "${url}"`);
-        await FrontendCacheService.initialize();
+        LOG.debug(`Clearing internal caches for "${url}"`);
+        await CacheService.clearCaches();
 
         LOG.debug(`Rendering ReactJS app for "${url}"`);
         let bodyString : string = '';

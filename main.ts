@@ -1,8 +1,8 @@
 // Copyright (c) 2021. Heusala Group Oy <info@heusalagroup.fi>. All rights reserved.
 
-import { HTTP,  IncomingMessage, ServerResponse } from 'http';
+import { Server as HttpServer, createServer as createHttpServer, IncomingMessage, ServerResponse } from 'http';
 
-import { ProcessUtils } from "../../hg/core/ProcessUtils";
+import { ProcessUtils } from "../core/ProcessUtils";
 
 // Must be first import to define environment variables before anything else
 ProcessUtils.initEnvFromDefaultFiles();
@@ -14,19 +14,19 @@ import {
     BACKEND_PORT,
     BACKEND_SCRIPT_NAME
 } from "./constants/runtime";
-import { LogService } from "../../hg/core/LogService";
+import { LogService } from "../core/LogService";
 
 LogService.setLogLevel(BACKEND_LOG_LEVEL);
 
 import { ExitStatus } from "./types/ExitStatus";
-import { LogLevel } from "../../hg/core/types/LogLevel";
-import { RequestClient } from "../../hg/core/RequestClient";
-import { RequestServer } from "../../hg/core/RequestServer";
-import { RequestRouter } from "../../hg/core/requestServer/RequestRouter";
-import { Headers } from "../../hg/core/request/Headers";
+import { LogLevel } from "../core/types/LogLevel";
+import { RequestClient } from "../core/RequestClient";
+import { RequestServer } from "../core/RequestServer";
+import { RequestRouter } from "../core/requestServer/RequestRouter";
+import { Headers } from "../core/request/Headers";
 import { HttpServerController } from "./controller/HttpServerController";
-import { isString } from "../../hg/core/modules/lodash";
-import { HttpService } from "../../palvelinkauppa/services/HttpService";
+import { isString } from "../core/modules/lodash";
+import { HttpService } from "../core/HttpService";
 
 const LOG = LogService.createLogger('main');
 
@@ -34,7 +34,7 @@ export async function main (
     args: any[] = []
 ) : Promise<ExitStatus> {
 
-    let server : HTTP.Server | undefined;
+    let server : HttpServer | undefined;
 
     try {
 
@@ -71,7 +71,10 @@ export async function main (
         };
 
         if (BACKEND_API_URL) {
+            LOG.debug(`Internal backend API set as: ${BACKEND_API_URL}`);
             HttpService.setBaseUrl(BACKEND_API_URL);
+        } else {
+            LOG.warn(`Warning! No BACKEND_API_URL defined. HTTP calls may not work correctly.`);
         }
 
         if (initFile) {
@@ -86,7 +89,7 @@ export async function main (
             BACKEND_API_PROXY_URL
         );
 
-        server = HTTP.createServer(
+        server = createHttpServer(
             (
                 req : IncomingMessage,
                 res : ServerResponse

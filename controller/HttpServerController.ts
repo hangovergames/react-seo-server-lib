@@ -1,17 +1,20 @@
 // Copyright (c) 2021. Heusala Group Oy <info@heusalagroup.fi>. All rights reserved.
 
-import { ReactServerController } from "./ReactServerController";
-import { ResponseEntity } from "../../../hg/core/request/ResponseEntity";
-import { LogService } from "../../../hg/core/LogService";
 import { IncomingMessage, ServerResponse } from "http";
-import { STATIC } from 'node-static';
+import { Server as StaticServer } from 'node-static';
+import { ResponseEntity } from "../../core/request/ResponseEntity";
+import { LogService } from "../../core/LogService";
+import { ReactServerController } from "./ReactServerController";
+import { WELL_KNOWN_HG_HEALTH_CHECK_END_POINT } from "../../core/constants/wellKnown";
+import { startsWith } from "../../core/modules/lodash";
+import { createHealthCheckDTO } from "../../core/types/HealthCheckDTO";
 
 const LOG = LogService.createLogger('HttpServerController');
 
 export class HttpServerController {
 
     private readonly _appDir      : string;
-    private readonly _fileServer  : STATIC.Server;
+    private readonly _fileServer  : StaticServer;
     private readonly _App         : any;
     private readonly _apiBasePath : string | undefined;
     private readonly _apiUrl      : string | undefined;
@@ -25,7 +28,7 @@ export class HttpServerController {
 
         this._appDir     = appDir;
         this._App        = App;
-        this._fileServer = new STATIC.Server(appDir);
+        this._fileServer = new StaticServer(appDir);
 
         if (apiUrl !== undefined) {
             this._apiBasePath = '/api';
@@ -56,7 +59,16 @@ export class HttpServerController {
 
             url = req.url;
 
-            if ( this._proxy && url.startsWith(this._apiBasePath) ) {
+            if ( startsWith(url, WELL_KNOWN_HG_HEALTH_CHECK_END_POINT)) {
+
+                await this._waitUntilRequestEnd(req);
+
+                // FIXME: Call health check for proxy target
+                HttpServerController._writeResponseEntity(res, url, ResponseEntity.ok<string>(JSON.stringify(createHealthCheckDTO(true))) );
+                return;
+            }
+
+            if ( this._proxy && startsWith(url, this._apiBasePath) ) {
 
                 LOG.debug(`Routing request "${url}" to "${this._apiUrl}"`)
                 await this._proxyRequestToTarget(req, res, this._apiUrl, this._apiBasePath);
