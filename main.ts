@@ -27,6 +27,7 @@ import { Headers } from "../core/request/Headers";
 import { HttpServerController } from "./controller/HttpServerController";
 import { isString } from "../core/modules/lodash";
 import { HttpService } from "../core/HttpService";
+import { ALL_REACT_ROUTES } from "../../sendanor/core/constants/route";
 
 const LOG = LogService.createLogger('main');
 
@@ -51,9 +52,9 @@ export async function main (
         }
 
         Headers.setLogLevel(LogLevel.INFO);
-        RequestRouter.setLogLevel(LogLevel.INFO);
+        RequestRouter.setLogLevel(LogLevel.DEBUG);
         RequestClient.setLogLevel(LogLevel.INFO);
-        RequestServer.setLogLevel(LogLevel.INFO);
+        RequestServer.setLogLevel(LogLevel.DEBUG);
         // SimpleMatrixClient.setLogLevel(LogLevel.INFO);
         // MatrixCrudRepository.setLogLevel(LogLevel.INFO);
 
@@ -86,7 +87,8 @@ export async function main (
         const httpController = new HttpServerController(
             appDir,
             App,
-            BACKEND_API_PROXY_URL
+            BACKEND_API_PROXY_URL,
+            ALL_REACT_ROUTES
         );
 
         server = createHttpServer(
@@ -94,22 +96,9 @@ export async function main (
                 req : IncomingMessage,
                 res : ServerResponse
             ) => {
-                try {
-                    httpController.handleRequest(req, res).catch(err => {
-                        LOG.error(`Unexpected exception from promise handler caught: `, err);
-                    }).finally( () => {
-                        if (!res.writableEnded) {
-                            LOG.warn(`"${req.method} ${req.url}": Warning! Async request handler did not close the response.`);
-                            res.end();
-                        }
-                    });
-                } catch (err) {
-                    LOG.error(`Exception caught: `, err);
-                    if (!res.writableEnded) {
-                        LOG.warn(`"${req.method} ${req.url}": Warning! Request handler did not close the response.`);
-                        res.end();
-                    }
-                }
+                handleSafeServerRequest(httpController, req, res).catch((err => {
+                    LOG.error(`Unexpected error in request handler: `, err);
+                }));
             }
         );
 
@@ -150,6 +139,33 @@ export async function main (
     } catch (err) {
         LOG.error(`Fatal error: `, err);
         return ExitStatus.FATAL_ERROR;
+    }
+
+    /**
+     *
+     * @param httpController
+     * @param req
+     * @param res
+     */
+    async function handleSafeServerRequest (
+        httpController : HttpServerController,
+        req : IncomingMessage,
+        res : ServerResponse
+    ) {
+        const method = req?.method;
+        const url = req?.url;
+        try {
+            LOG.debug(`"${method} ${url}": Request started...`);
+            await httpController.handleRequest(req, res);
+            LOG.debug(`"${method} ${url}": Request ended`);
+        } catch (err: any) {
+            LOG.error(`"${method} ${url}": Exception caught: `, err);
+        } finally {
+            if (!res.writableEnded) {
+                LOG.warn(`"${method} ${url}": Warning! Request handler did not close the response.`);
+                res.end();
+            }
+        }
     }
 
     /**

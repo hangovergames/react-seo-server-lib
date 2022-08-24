@@ -1,6 +1,6 @@
 // Copyright (c) 2021. Heusala Group Oy <info@heusalagroup.fi>. All rights reserved.
 
-import { isNumber, parseInteger } from "../../../hg/core/modules/lodash";
+import { isNumber, parseInteger } from "../../core/modules/lodash";
 
 export enum ExitStatus {
 
