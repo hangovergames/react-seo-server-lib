@@ -21,15 +21,19 @@ LogService.setLogLevel(BACKEND_LOG_LEVEL);
 import { ExitStatus } from "./types/ExitStatus";
 import { LogLevel } from "../core/types/LogLevel";
 import { RequestClient } from "../core/RequestClient";
-import { RequestServer } from "../core/RequestServer";
-import { RequestRouter } from "../core/requestServer/RequestRouter";
+import { RequestServer } from "../node/RequestServer";
+import { RequestRouter } from "../node/requestServer/RequestRouter";
 import { Headers } from "../core/request/Headers";
 import { HttpServerController } from "./controller/HttpServerController";
 import { isString } from "../core/modules/lodash";
 import { HttpService } from "../core/HttpService";
-import { ALL_REACT_ROUTES } from "../../sendanor/core/constants/route";
 
 const LOG = LogService.createLogger('main');
+
+let ALL_REACT_ROUTES : readonly string[] = [];
+export function setMainReactRoutes (routes : readonly string[]) {
+    ALL_REACT_ROUTES = routes;
+}
 
 export async function main (
     args: any[] = []
@@ -48,7 +52,7 @@ export async function main (
 
         if ( !isString(appDir) || !appComponent ) {
             LOG.error(`USAGE: ${BACKEND_SCRIPT_NAME} APP_DIR APP_COMPONENT_FILE`);
-            return;
+            return ExitStatus.USAGE;
         }
 
         Headers.setLogLevel(LogLevel.INFO);
@@ -108,6 +112,10 @@ export async function main (
 
         const stopPromise = new Promise<void>((resolve, reject) => {
             try {
+                if (!server) {
+                    reject(`No server defined`);
+                    return;
+                }
                 server.once('close', () => {
                     LOG.debug('Stopping server from RequestServer stop event');
                     resolve();
@@ -119,8 +127,10 @@ export async function main (
 
         ProcessUtils.setupDestroyHandler( () => {
 
-            server.removeListener('error', onError);
-            server.removeListener('listening', onListening);
+            if (server) {
+                server.removeListener('error', onError);
+                server.removeListener('listening', onListening);
+            }
 
             LOG.debug('Stopping server from process utils event');
 
@@ -200,10 +210,14 @@ export async function main (
      */
 
     function onListening () {
+        if (!server) {
+            LOG.info('Listening on unknown');
+            return;
+        }
         const addr = server.address();
         const bind = typeof addr === 'string'
             ? 'pipe ' + addr
-            : 'port ' + addr.port;
+            : 'port ' + (addr ? addr.port : 'unknown');
         LOG.info('Listening on ' + bind);
     }
 

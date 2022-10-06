@@ -68,6 +68,9 @@ export class HttpServerController {
         try {
             method = req.method;
             url = req.url;
+            if (!url) {
+                throw new TypeError('Request did not have URL');
+            }
             if ( startsWith(url, WELL_KNOWN_HG_HEALTH_CHECK_END_POINT)) {
                 LOG.debug(`Routing request "${method} ${url}" to local health check`);
                 await this._waitUntilRequestEnd(req);
@@ -77,6 +80,8 @@ export class HttpServerController {
                 await this._serveUsingReactController(res, url);
             } else if ( this._proxy && this._isApiRoute(url) ) {
                 LOG.debug(`Routing request "${method} ${url}" to "${this._apiUrl}"`)
+                if (!this._apiUrl) throw new TypeError('apiUrl not defined');
+                if (!this._apiBasePath) throw new TypeError('apiBasePath not defined');
                 await this._proxyRequestToTarget(req, res, this._apiUrl, this._apiBasePath);
             } else {
                 LOG.debug(`Routing request "${method} ${url}" to static server`)
@@ -88,14 +93,14 @@ export class HttpServerController {
             if ( statusCode === 404 ) {
                 try {
                     LOG.debug(`"${method} ${url}": Not Found 404: Routing request to ReactController`);
-                    await this._serveUsingReactController(res, url);
+                    await this._serveUsingReactController(res, url ? url : '/');
                 } catch (err2) {
                     LOG.debug(`"${method} ${url}": Error in ReactController: `, err2);
-                    HttpServerController._writeError(res, url, err2, 500, 'Internal Server Error');
+                    HttpServerController._writeError(res, url ? url : '/', err2, 500, 'Internal Server Error');
                 }
             } else {
                 LOG.error(`"${method} ${url}": Error ${statusCode}: `, err);
-                HttpServerController._writeError(res, url, err, statusCode, `Error ${statusCode}`);
+                HttpServerController._writeError(res, url ? url : '/', err, statusCode, `Error ${statusCode}`);
             }
         } finally {
             if (!res.writableEnded) {
