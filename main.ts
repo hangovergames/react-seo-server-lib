@@ -27,6 +27,7 @@ import { Headers } from "../core/request/Headers";
 import { HttpServerController } from "./controller/HttpServerController";
 import { isString } from "../core/modules/lodash";
 import { HttpService } from "../core/HttpService";
+import { HgNode } from "../node/HgNode";
 
 const LOG = LogService.createLogger('main');
 
@@ -54,6 +55,8 @@ export async function main (
             LOG.error(`USAGE: ${BACKEND_SCRIPT_NAME} APP_DIR APP_COMPONENT_FILE`);
             return ExitStatus.USAGE;
         }
+
+        HgNode.initialize();
 
         Headers.setLogLevel(LogLevel.INFO);
         RequestRouter.setLogLevel(LogLevel.DEBUG);
