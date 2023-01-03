@@ -8,8 +8,17 @@ import { LogService } from "../../core/LogService";
 
 const LOG = LogService.createLogger('StaticReactAppService');
 
+/**
+ * A service for rendering a static React app to a string.
+ */
 export class StaticReactAppService {
 
+    /**
+     * Renders the static React app to a string.
+     * @param {string} url - The URL to use for the router.
+     * @param {any} App - The React app to render.
+     * @returns {string} The rendered React app as a string.
+     */
     public static renderString (
         url         : string,
         App         : any
