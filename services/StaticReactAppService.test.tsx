@@ -1,6 +1,9 @@
 // Copyright (c) 2023. Heusala Group Oy <info@heusalagroup.fi>. All rights reserved.
 
 import { StaticReactAppService } from "./StaticReactAppService";
+import { LogLevel } from "../../core/types/LogLevel";
+
+StaticReactAppService.setLogLevel(LogLevel.NONE);
 
 describe("StaticReactAppService", () => {
 

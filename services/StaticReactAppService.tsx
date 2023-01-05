@@ -6,6 +6,7 @@ import { default as i18n } from "i18next";
 import { I18nextProvider } from 'react-i18next';
 import { LogService } from "../../core/LogService";
 import { isString } from "../../core/modules/lodash";
+import { LogLevel } from "../../core/types/LogLevel";
 
 const LOG = LogService.createLogger('StaticReactAppService');
 
@@ -13,6 +14,10 @@ const LOG = LogService.createLogger('StaticReactAppService');
  * A service for rendering a static React app to a string.
  */
 export class StaticReactAppService {
+
+    public static setLogLevel(level: LogLevel) {
+        LOG.setLogLevel(level);
+    }
 
     /**
      * Renders the static React app to a string.
