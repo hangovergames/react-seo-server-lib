@@ -3,10 +3,8 @@
 // See also rollup.config.js
 //
 
-import {
-    parseBoolean as _parseBoolean,
-    parseNonEmptyString as _parseNonEmptyString
-} from "../../../hg/core/modules/lodash";
+import { parseNonEmptyString as _parseNonEmptyString } from "../../core/types/String";
+import { parseBoolean as _parseBoolean } from "../../core/types/Boolean";
 
 function parseBoolean (value : any) : boolean | undefined {
     if (value.startsWith('%'+'{') && value.endsWith('}')) return undefined;

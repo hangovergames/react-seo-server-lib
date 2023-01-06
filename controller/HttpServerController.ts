@@ -6,8 +6,10 @@ import { ResponseEntity } from "../../core/request/ResponseEntity";
 import { LogService } from "../../core/LogService";
 import { ReactServerController } from "./ReactServerController";
 import { WELL_KNOWN_HG_HEALTH_CHECK_END_POINT } from "../../core/constants/wellKnown";
-import { every, some, startsWith } from "../../core/modules/lodash";
+import { startsWith } from "../../core/functions/startsWith";
 import { createHealthCheckDTO } from "../../core/types/HealthCheckDTO";
+import { every } from "../../core/functions/every";
+import { some } from "../../core/functions/some";
 
 const LOG = LogService.createLogger('HttpServerController');
 

@@ -25,9 +25,9 @@ import { RequestServer } from "../node/RequestServer";
 import { RequestRouter } from "../node/requestServer/RequestRouter";
 import { Headers } from "../core/request/Headers";
 import { HttpServerController } from "./controller/HttpServerController";
-import { isString } from "../core/modules/lodash";
 import { HttpService } from "../core/HttpService";
 import { HgNode } from "../node/HgNode";
+import { isString } from "../core/types/String";
 
 const LOG = LogService.createLogger('main');
 

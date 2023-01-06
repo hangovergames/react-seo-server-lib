@@ -1,11 +1,11 @@
-// Copyright (c) 2021. Heusala Group Oy <info@heusalagroup.fi>. All rights reserved.
+// Copyright (c) 2021-2023. Heusala Group Oy <info@heusalagroup.fi>. All rights reserved.
 
-import { parseBoolean, parseNonEmptyString } from "../../../hg/core/modules/lodash";
-import { LogLevel,  parseLogLevel } from "../../../hg/core/types/LogLevel";
+import { LogLevel, parseLogLevel } from "../../core/types/LogLevel";
 import {
     BUILD_COMMAND_NAME,
     BUILD_LOG_LEVEL
 } from "./build";
+import { parseNonEmptyString } from "../../core/types/String";
 
 export const BACKEND_LOG_LEVEL       : LogLevel = parseLogLevel(parseNonEmptyString(process?.env?.BACKEND_LOG_LEVEL) ?? parseNonEmptyString(BUILD_LOG_LEVEL)) ?? LogLevel.INFO ;
 export const BACKEND_SCRIPT_NAME     : string   = parseNonEmptyString(process?.env?.BACKEND_SCRIPT_NAME)                   ?? BUILD_COMMAND_NAME;
