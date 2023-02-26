@@ -2,6 +2,7 @@
 
 import { StaticReactAppService } from "./StaticReactAppService";
 import { LogLevel } from "../../core/types/LogLevel";
+import React from "react";
 
 StaticReactAppService.setLogLevel(LogLevel.NONE);
 
@@ -19,7 +20,7 @@ describe("StaticReactAppService", () => {
 
         it("should throw an error if the url parameter is not a string", () => {
             const url = 123; // This is not a string
-            const App = () => <div>Test</div>;
+            const App : any = () : any => <div>Test</div>;
             // @ts-ignore
             expect(() => StaticReactAppService.renderString(url, App)).toThrow(TypeError);
         });
