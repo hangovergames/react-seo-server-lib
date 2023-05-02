@@ -1,3 +1,5 @@
+**Join our [Discord](https://discord.gg/UBTrHxA78f) to discuss about our software!**
+
 # @heusalagroup/fi.hg.ssr
 
 ReactJS Server Side Rendering Library as a Git Submodule, written for TypeScript.
