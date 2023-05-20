@@ -1,7 +1,7 @@
 // Copyright (c) 2021-2022. Heusala Group Oy <info@heusalagroup.fi>. All rights reserved.
 
 import { resolve as pathResolve } from "path";
-import { ResponseEntity } from "../../core/request/ResponseEntity";
+import { ResponseEntity } from "../../core/request/types/ResponseEntity";
 import { FileSystemService } from "../services/FileSystemService";
 import { LogService } from "../../core/LogService";
 import { StaticReactAppService } from "../services/StaticReactAppService";

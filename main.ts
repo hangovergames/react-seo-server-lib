@@ -22,8 +22,8 @@ import { ExitStatus } from "./types/ExitStatus";
 import { LogLevel } from "../core/types/LogLevel";
 import { RequestClient } from "../core/RequestClient";
 import { RequestServer } from "../node/RequestServer";
-import { RequestRouter } from "../node/requestServer/RequestRouter";
-import { Headers } from "../core/request/Headers";
+import { RequestRouterImpl } from "../core/requestServer/RequestRouterImpl";
+import { Headers } from "../core/request/types/Headers";
 import { HttpServerController } from "./controller/HttpServerController";
 import { HttpService } from "../core/HttpService";
 import { HgNode } from "../node/HgNode";
@@ -59,7 +59,7 @@ export async function main (
         HgNode.initialize();
 
         Headers.setLogLevel(LogLevel.INFO);
-        RequestRouter.setLogLevel(LogLevel.DEBUG);
+        RequestRouterImpl.setLogLevel(LogLevel.DEBUG);
         RequestClient.setLogLevel(LogLevel.INFO);
         RequestServer.setLogLevel(LogLevel.DEBUG);
         // SimpleMatrixClient.setLogLevel(LogLevel.INFO);

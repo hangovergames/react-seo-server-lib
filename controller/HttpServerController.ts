@@ -2,7 +2,7 @@
 
 import { IncomingMessage, ServerResponse } from "http";
 import { Server as StaticServer } from 'node-static';
-import { ResponseEntity } from "../../core/request/ResponseEntity";
+import { ResponseEntity } from "../../core/request/types/ResponseEntity";
 import { LogService } from "../../core/LogService";
 import { ReactServerController } from "./ReactServerController";
 import { WELL_KNOWN_HG_HEALTH_CHECK_END_POINT } from "../../core/constants/wellKnown";
