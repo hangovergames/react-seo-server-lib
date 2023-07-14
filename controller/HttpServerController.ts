@@ -10,6 +10,8 @@ import { startsWith } from "../../core/functions/startsWith";
 import { createHealthCheckDTO } from "../../core/types/HealthCheckDTO";
 import { every } from "../../core/functions/every";
 import { some } from "../../core/functions/some";
+import { Headers } from "../../core/request/types/Headers";
+import { isArray } from "../../core/types/Array";
 
 const LOG = LogService.createLogger('HttpServerController');
 
@@ -195,8 +197,13 @@ export class HttpServerController {
     ) {
         const statusCode = response.getStatusCode();
         LOG.info(`"${url}": ${statusCode}`);
+        this._writeResponseHeaders(response, res, 'text/plain');
         res.writeHead(statusCode);
-        res.end(response.getBody());
+        if (response.hasBody()) {
+            res.end(response.getBody());
+        } else {
+            res.end();
+        }
     }
 
     private static _writeError (
@@ -286,6 +293,28 @@ export class HttpServerController {
                 );
             }
         );
+    }
+
+    private static _writeResponseHeaders (
+        responseEntity  : ResponseEntity<any>,
+        res             : ServerResponse,
+        defaultMimeType : string = 'text/plain'
+    ) {
+        const headers : Headers = responseEntity.getHeaders();
+        if (!headers.isEmpty()) {
+            headers.keySet().forEach((headerKey : string) => {
+                const headerValue = headers.getValue(headerKey) ?? '';
+                LOG.debug(`_writeResponseHeaders: Setting response header as "${headerKey}": "${headerValue}"`);
+                if (isArray(headerValue)) {
+                    res.setHeader(headerKey, [...headerValue] as string[]);
+                } else {
+                    res.setHeader(headerKey, headerValue);
+                }
+            });
+        }
+        if (!headers.containsKey('Content-Type')) {
+            res.setHeader('Content-Type', defaultMimeType);
+        }
     }
 
 }
