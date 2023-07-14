@@ -9,10 +9,33 @@ import { Helmet, HelmetData } from "react-helmet";
 import { HtmlManager } from "../services/HtmlManager";
 import { VoidCallback } from "../../core/interfaces/callbacks";
 import { CacheService } from "../../core/CacheService";
+import { Html5 } from "../../core/html/Html5";
 
 const LOG = LogService.createLogger('ReactServerController');
 
 export class ReactServerController {
+
+    private static _createErrorPage () : string {
+        return Html5.createDocument(
+            'Internal Server Error',
+            '<h3>Internal Server Error</h3>',
+            'en'
+        ).toString();
+    }
+
+    private static _createInternalServerResponse () : ResponseEntity<string> {
+        return (
+            ResponseEntity.internalServerError<string>()
+                          .body(ReactServerController._createErrorPage())
+                          .headers({
+                              'Server': 'hg-ssr-server',
+                              'Cache-Control' : 'no-cache',
+                              'Content-Type': 'text/html',
+                              'Date': new(Date)().toUTCString(),
+                              'Last-Modified': new(Date)().toUTCString(),
+                          })
+        );
+    }
 
     public static async handleReactRequest (
         url           : string,
@@ -29,7 +52,7 @@ export class ReactServerController {
             htmlString = await FileSystemService.readTextFile(indexFile);
         } catch (err) {
             LOG.error(`Could not read "${indexFile}" for "${url}":`, err);
-            return ResponseEntity.internalServerError<string>().body('Internal Server Error');
+            return this._createInternalServerResponse();
         }
 
         LOG.debug(`Clearing internal caches for "${url}"`);
@@ -41,7 +64,7 @@ export class ReactServerController {
             bodyString = ReactServerController._renderHtmlString(url, htmlString, App);
         } catch (err) {
             LOG.error(`Could not render "${url}":`, err);
-            return ResponseEntity.internalServerError<string>().body('Internal Server Error');
+            return this._createInternalServerResponse();
         }
 
         // // Waits for next stick so that we make sure there isn't HTTP requests triggered
@@ -63,7 +86,17 @@ export class ReactServerController {
         //     LOG.debug(`HttpService was not loading any resources for "${url}"`);
         // }
 
-        return ResponseEntity.ok<string>().body( bodyString );
+        return (
+            ResponseEntity.ok<string>()
+                          .body( bodyString )
+                          .headers({
+                              'Server': 'hg-ssr-server',
+                              'Cache-Control': 'no-cache',
+                              'Content-Type': 'text/html',
+                              'Date': new(Date)().toUTCString(),
+                              'Last-Modified': new(Date)().toUTCString(),
+                          })
+        );
 
     }
 
@@ -72,7 +105,6 @@ export class ReactServerController {
         htmlString: string,
         App: any
     ) : string {
-
         let appString : string | undefined;
         let helmet    : HelmetData;
         try {
@@ -96,7 +128,6 @@ export class ReactServerController {
             manager.replaceContentById('div', 'root', appString);
         }
         return manager.toString();
-
     }
 
     private static _waitUntilMs (time: number) : [Promise<void>, VoidCallback] {

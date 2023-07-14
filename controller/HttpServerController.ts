@@ -31,16 +31,30 @@ export class HttpServerController {
      * @param reactRouteList This array should include any route that must be handler using SSR React.
      *                       Especially it should include the index.html file located inside the public folder, otherwise
      *                       it will be served directly using static router and SSR wouldn't work for the index page.
+     * @param clientCacheTime Configures the time how long client is supposed to cache data
+     * @param serverInfo Configures the server info HTTP header for static files
      */
     public constructor (
-        appDir          : string,
-        App             : any,
-        apiUrl         ?: string,
-        reactRouteList ?: readonly string[]
+        appDir           : string,
+        App              : any,
+        apiUrl          ?: string,
+        reactRouteList  ?: readonly string[],
+        clientCacheTime  : number = 300,
+        serverInfo       : string = 'hg-ssr-server',
     ) {
         this._appDir     = appDir;
         this._App        = App;
-        this._fileServer = new StaticServer(appDir);
+        this._fileServer = new StaticServer(
+            appDir,
+            {
+                cache: clientCacheTime,
+
+                // Incorrect type information. It is not a Buffer, but string (or anything that has toString() method).
+                // @ts-ignore
+                serverInfo: serverInfo
+
+            }
+        );
         this._reactRouteList = reactRouteList ?? [];
 
         if (apiUrl !== undefined) {
