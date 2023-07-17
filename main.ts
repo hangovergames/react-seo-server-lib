@@ -12,7 +12,10 @@ import {
     BACKEND_API_URL,
     BACKEND_LOG_LEVEL,
     BACKEND_PORT,
-    BACKEND_SCRIPT_NAME
+    BACKEND_SCRIPT_NAME,
+    DISCORD_LOG_LEVEL,
+    DISCORD_LOG_NAME,
+    DISCORD_LOG_URL
 } from "./constants/runtime";
 import { LogService } from "../core/LogService";
 
@@ -28,6 +31,9 @@ import { HttpServerController } from "./controller/HttpServerController";
 import { HttpService } from "../core/HttpService";
 import { HgNode } from "../node/HgNode";
 import { isString } from "../core/types/String";
+import { ConsoleLogger } from "../core/logger/console/ConsoleLogger";
+import { DiscordLogger } from "../core/logger/discord/DiscordLogger";
+import { CompositeLogger } from "../core/logger/composite/CompositeLogger";
 
 const LOG = LogService.createLogger('main');
 
@@ -39,10 +45,35 @@ export function setMainReactRoutes (routes : readonly string[]) {
 export async function main (
     args: any[] = []
 ) : Promise<ExitStatus> {
-
     let server : HttpServer | undefined;
-
     try {
+
+        Headers.setLogLevel(LogLevel.INFO);
+        RequestRouterImpl.setLogLevel(LogLevel.DEBUG);
+        RequestClient.setLogLevel(LogLevel.INFO);
+        RequestServer.setLogLevel(LogLevel.DEBUG);
+        // SimpleMatrixClient.setLogLevel(LogLevel.INFO);
+        // MatrixCrudRepository.setLogLevel(LogLevel.INFO);
+
+        HgNode.initialize();
+
+        // Setup logging
+        LogService.setLogLevel(LogLevel.DEBUG);
+        const consoleLogger = new ConsoleLogger();
+        consoleLogger.setLogLevel(BACKEND_LOG_LEVEL);
+        const discordLogger = DISCORD_LOG_URL ? new DiscordLogger(
+            DISCORD_LOG_NAME,
+            DISCORD_LOG_URL,
+            DISCORD_LOG_LEVEL
+        ) : undefined;
+        const mainLogger = new CompositeLogger(
+            [
+                consoleLogger,
+                ...(discordLogger ? [discordLogger]: [])
+            ]
+        );
+        LogService.setLogger(mainLogger);
+        LOG.debug(`Loglevel as ${LogService.getLogLevelString()}`);
 
         args.shift();
         args.shift();
@@ -55,17 +86,6 @@ export async function main (
             LOG.error(`USAGE: ${BACKEND_SCRIPT_NAME} APP_DIR APP_COMPONENT_FILE`);
             return ExitStatus.USAGE;
         }
-
-        HgNode.initialize();
-
-        Headers.setLogLevel(LogLevel.INFO);
-        RequestRouterImpl.setLogLevel(LogLevel.DEBUG);
-        RequestClient.setLogLevel(LogLevel.INFO);
-        RequestServer.setLogLevel(LogLevel.DEBUG);
-        // SimpleMatrixClient.setLogLevel(LogLevel.INFO);
-        // MatrixCrudRepository.setLogLevel(LogLevel.INFO);
-
-        LOG.debug(`Loglevel as ${LogService.getLogLevelString()}`);
 
         // Hijack require for TypeScript ES2020 interop
         const ModuleM = require('module');

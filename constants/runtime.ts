@@ -32,6 +32,10 @@ export const BACKEND_API_PROXY_ENABLED : boolean = `${(process?.env?.BACKEND_API
  */
 export const BACKEND_API_PROXY_URL : string | undefined = BACKEND_API_PROXY_ENABLED ? (parseNonEmptyString(process?.env?.BACKEND_API_PROXY_URL) ?? BACKEND_API_URL) : undefined;
 
+export const DISCORD_LOG_NAME : string = parseNonEmptyString(process?.env?.DISCORD_LOG_NAME ) ?? 'hg-ssr-server';
+export const DISCORD_LOG_URL : string = parseNonEmptyString(process?.env?.DISCORD_LOG_URL ) ?? '';
+export const DISCORD_LOG_LEVEL       : LogLevel = parseLogLevel(parseNonEmptyString(process?.env?.DISCORD_LOG_LEVEL) ?? parseNonEmptyString(BUILD_LOG_LEVEL)) ?? LogLevel.INFO;
+
 /**
  * Normalize a port into a number, string, or false.
  */
