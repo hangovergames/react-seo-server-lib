@@ -3,16 +3,18 @@
 // See also rollup.config.js
 //
 
-import { parseNonEmptyString as _parseNonEmptyString } from "../../core/types/String";
+import { isString, parseNonEmptyString as _parseNonEmptyString } from "../../core/types/String";
 import { parseBoolean as _parseBoolean } from "../../core/types/Boolean";
 
 function parseBoolean (value : any) : boolean | undefined {
-    if (value.startsWith('%'+'{') && value.endsWith('}')) return undefined;
+    if (value === undefined) return undefined;
+    if (isString(value) && value.startsWith('%'+'{') && value.endsWith('}')) return undefined;
     return _parseBoolean(value);
 }
 
 function parseNonEmptyString (value : any) : string | undefined {
-    if (value.startsWith('%'+'{') && value.endsWith('}')) return undefined;
+    if (value === undefined) return undefined;
+    if (isString(value) && value.startsWith('%'+'{') && value.endsWith('}')) return undefined;
     return _parseNonEmptyString(value);
 }
 
