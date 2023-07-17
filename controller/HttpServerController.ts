@@ -35,6 +35,7 @@ export class HttpServerController {
      *                       it will be served directly using static router and SSR wouldn't work for the index page.
      * @param clientCacheTime Configures the time how long client is supposed to cache data
      * @param serverInfo Configures the server info HTTP header for static files
+     * @param enableGzip Configures the support to serve gzip files if one exist with the same name and .gz prefix
      */
     public constructor (
         appDir           : string,
@@ -43,6 +44,7 @@ export class HttpServerController {
         reactRouteList  ?: readonly string[],
         clientCacheTime  : number = 300,
         serverInfo       : string = 'hg-ssr-server',
+        enableGzip       : boolean = true
     ) {
         this._appDir     = appDir;
         this._App        = App;
@@ -53,7 +55,9 @@ export class HttpServerController {
 
                 // Incorrect type information. It is not a Buffer, but string (or anything that has toString() method).
                 // @ts-ignore
-                serverInfo: serverInfo
+                serverInfo: serverInfo,
+
+                gzip: enableGzip
 
             }
         );

@@ -2,10 +2,11 @@
 
 import { LogLevel, parseLogLevel } from "../../core/types/LogLevel";
 import {
-    BUILD_COMMAND_NAME,
+    BUILD_COMMAND_NAME, BUILD_ENABLE_GZIP,
     BUILD_LOG_LEVEL
 } from "./build";
 import { parseNonEmptyString } from "../../core/types/String";
+import { parseBoolean } from "../../core/types/Boolean";
 
 export const BACKEND_LOG_LEVEL       : LogLevel = parseLogLevel(parseNonEmptyString(process?.env?.BACKEND_LOG_LEVEL) ?? parseNonEmptyString(BUILD_LOG_LEVEL)) ?? LogLevel.INFO ;
 export const BACKEND_SCRIPT_NAME     : string   = parseNonEmptyString(process?.env?.BACKEND_SCRIPT_NAME)                   ?? BUILD_COMMAND_NAME;
@@ -36,6 +37,8 @@ export const DISCORD_LOG_NAME : string = parseNonEmptyString(process?.env?.DISCO
 export const DISCORD_LOG_URL : string = parseNonEmptyString(process?.env?.DISCORD_LOG_URL ) ?? '';
 export const DISCORD_LOG_LEVEL       : LogLevel = parseLogLevel(parseNonEmptyString(process?.env?.DISCORD_LOG_LEVEL) ?? parseNonEmptyString(BUILD_LOG_LEVEL)) ?? LogLevel.INFO;
 
+export const BACKEND_ENABLE_GZIP : boolean = parseBoolean(process?.env?.BACKEND_ENABLE_GZIP) ?? BUILD_ENABLE_GZIP;
+
 /**
  * Normalize a port into a number, string, or false.
  */
@@ -45,4 +48,3 @@ function normalizePort (val : string) : number | string | false {
     if (port >= 0) return port;
     return false;
 }
-

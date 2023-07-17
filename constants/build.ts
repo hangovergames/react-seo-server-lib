@@ -44,6 +44,11 @@ export const BUILD_DATE : string  = /* @__PURE__ */parseNonEmptyString('%{BUILD_
 /**
  * @__PURE__
  */
+export const BUILD_ENABLE_GZIP : boolean = parseBoolean(process?.env?.BUILD_ENABLE_GZIP) ?? true;
+
+/**
+ * @__PURE__
+ */
 export const IS_PRODUCTION  : boolean = BUILD_NODE_ENV === 'production';
 
 /**

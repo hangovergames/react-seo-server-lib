@@ -9,7 +9,7 @@ ProcessUtils.initEnvFromDefaultFiles();
 
 import {
     BACKEND_API_PROXY_URL,
-    BACKEND_API_URL,
+    BACKEND_API_URL, BACKEND_ENABLE_GZIP,
     BACKEND_LOG_LEVEL,
     BACKEND_PORT,
     BACKEND_SCRIPT_NAME,
@@ -115,7 +115,10 @@ export async function main (
             appDir,
             App,
             BACKEND_API_PROXY_URL,
-            ALL_REACT_ROUTES
+            ALL_REACT_ROUTES,
+            300,
+            'nor-ssr-server',
+            BACKEND_ENABLE_GZIP
         );
 
         server = createHttpServer(
