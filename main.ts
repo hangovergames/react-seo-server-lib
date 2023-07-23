@@ -23,7 +23,7 @@ LogService.setLogLevel(BACKEND_LOG_LEVEL);
 
 import { ExitStatus } from "./types/ExitStatus";
 import { LogLevel } from "../core/types/LogLevel";
-import { RequestClient } from "../core/RequestClient";
+import { RequestClientImpl } from "../core/RequestClientImpl";
 import { RequestServer } from "../node/RequestServer";
 import { RequestRouterImpl } from "../core/requestServer/RequestRouterImpl";
 import { Headers } from "../core/request/types/Headers";
@@ -50,7 +50,7 @@ export async function main (
 
         Headers.setLogLevel(LogLevel.INFO);
         RequestRouterImpl.setLogLevel(LogLevel.DEBUG);
-        RequestClient.setLogLevel(LogLevel.INFO);
+        RequestClientImpl.setLogLevel(LogLevel.INFO);
         RequestServer.setLogLevel(LogLevel.DEBUG);
         // SimpleMatrixClient.setLogLevel(LogLevel.INFO);
         // MatrixCrudRepository.setLogLevel(LogLevel.INFO);
