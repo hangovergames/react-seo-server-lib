@@ -5,7 +5,7 @@ import { ResponseEntity } from "../../core/request/types/ResponseEntity";
 import { FileSystemService } from "../services/FileSystemService";
 import { LogService } from "../../core/LogService";
 import { StaticReactAppService } from "../services/StaticReactAppService";
-import { Helmet, HelmetData } from "react-helmet";
+import { Helmet, HelmetData } from "react-helmet-async";
 import { HtmlManager } from "../services/HtmlManager";
 import { VoidCallback } from "../../core/interfaces/callbacks";
 import { CacheService } from "../../core/CacheService";
