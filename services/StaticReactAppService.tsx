@@ -1,12 +1,13 @@
 // Copyright (c) 2021-2023. Heusala Group Oy <info@heusalagroup.fi>. All rights reserved.
 
-import { default as ReactDOMServer } from "react-dom/server";
+import { renderToString } from "react-dom/server";
 import { StaticRouter } from "react-router-dom/server";
 import { default as i18n } from "i18next";
 import { I18nextProvider } from 'react-i18next';
 import { LogService } from "../../core/LogService";
 import { LogLevel } from "../../core/types/LogLevel";
 import { isString } from "../../core/types/String";
+import { HgReactContext } from "../../frontend/HgReactContext";
 
 const LOG = LogService.createLogger('StaticReactAppService');
 
@@ -29,21 +30,17 @@ export class StaticReactAppService {
         url         : string,
         App         : any
     ) : string {
-
         if (!isString(url)) {
             throw new TypeError('`url` must be a string');
         }
-
         LOG.debug(`renderString: url: `, url);
-
-        return ReactDOMServer.renderToString(
+        return renderToString(
             <I18nextProvider i18n={i18n}>
                 <StaticRouter location={url}>
                     <App />
                 </StaticRouter>
             </I18nextProvider>
         );
-
     }
 
 }

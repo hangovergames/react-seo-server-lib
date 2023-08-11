@@ -2,10 +2,12 @@
 
 import { resolve as pathResolve } from "path";
 import { ResponseEntity } from "../../core/request/types/ResponseEntity";
+import { HelmetContext } from "../../frontend/services/HelmetContextService";
+import { HelmetContextServiceImpl } from "../../frontend/services/HelmetContextServiceImpl";
 import { FileSystemService } from "../services/FileSystemService";
 import { LogService } from "../../core/LogService";
 import { StaticReactAppService } from "../services/StaticReactAppService";
-import { Helmet, HelmetData } from "react-helmet-async";
+import { HelmetServerState } from "react-helmet-async";
 import { HtmlManager } from "../services/HtmlManager";
 import { VoidCallback } from "../../core/interfaces/callbacks";
 import { CacheService } from "../../core/CacheService";
@@ -105,15 +107,17 @@ export class ReactServerController {
         htmlString: string,
         App: any
     ) : string {
+
         let appString : string | undefined;
-        let helmet    : HelmetData;
         try {
             appString = StaticReactAppService.renderString(url, App);
-            helmet = Helmet.renderStatic();
         } catch (err) {
             LOG.error(`Error while rendering app: `, err);
-            helmet = Helmet.renderStatic(); // Must free up memory to prevent memory leaks in Helmet
         }
+
+        const helmetContext : HelmetContext = HelmetContextServiceImpl.getContext();
+        const helmet : HelmetServerState = helmetContext.helmet;
+
         const manager : HtmlManager = new HtmlManager(htmlString);
         manager.setHtmlAttributes(helmet.htmlAttributes.toString());
         manager.setBodyAttributes(helmet.bodyAttributes.toString());
