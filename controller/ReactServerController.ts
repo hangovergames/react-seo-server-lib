@@ -116,18 +116,23 @@ export class ReactServerController {
         }
 
         const helmetContext : HelmetContext = HelmetContextServiceImpl.getContext();
-        const helmet : HelmetServerState = helmetContext.helmet;
-
+        const helmet : HelmetServerState | undefined = helmetContext?.helmet;
         const manager : HtmlManager = new HtmlManager(htmlString);
-        manager.setHtmlAttributes(helmet.htmlAttributes.toString());
-        manager.setBodyAttributes(helmet.bodyAttributes.toString());
-        manager.setTitle(helmet.title.toString());
-        manager.setBase(helmet.base.toString());
-        manager.appendMeta(helmet.meta.toString());
-        manager.appendLink(helmet.link.toString());
-        manager.appendStyle(helmet.style.toString());
-        manager.appendScript(helmet.script.toString());
-        manager.replaceNoScript(helmet.noscript.toString());
+        if (!helmet) {
+            LOG.debug(`helmetContext = `, helmetContext);
+            LOG.debug(`helmet = `, helmet);
+            LOG.warn(`Warning! No helmet state detected`);
+        } else {
+            manager.setHtmlAttributes(helmet.htmlAttributes.toString());
+            manager.setBodyAttributes(helmet.bodyAttributes.toString());
+            manager.setTitle(helmet.title.toString());
+            manager.setBase(helmet.base.toString());
+            manager.appendMeta(helmet.meta.toString());
+            manager.appendLink(helmet.link.toString());
+            manager.appendStyle(helmet.style.toString());
+            manager.appendScript(helmet.script.toString());
+            manager.replaceNoScript(helmet.noscript.toString());
+        }
         if (appString) {
             manager.replaceContentById('div', 'root', appString);
         }
