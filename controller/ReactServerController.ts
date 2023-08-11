@@ -2,7 +2,6 @@
 
 import { resolve as pathResolve } from "path";
 import { ResponseEntity } from "../../core/request/types/ResponseEntity";
-import { HelmetContext } from "../../frontend/services/HelmetContextService";
 import { HelmetContextServiceImpl } from "../../frontend/services/HelmetContextServiceImpl";
 import { FileSystemService } from "../services/FileSystemService";
 import { LogService } from "../../core/LogService";
@@ -108,14 +107,16 @@ export class ReactServerController {
         App: any
     ) : string {
 
+        const helmetContextService = HelmetContextServiceImpl.create();
+        const helmetContext = helmetContextService.getContext();
+
         let appString : string | undefined;
         try {
-            appString = StaticReactAppService.renderString(url, App);
+            appString = StaticReactAppService.renderString(url, App, helmetContext);
         } catch (err) {
             LOG.error(`Error while rendering app: `, err);
         }
 
-        const helmetContext : HelmetContext = HelmetContextServiceImpl.getContext();
         const helmet : HelmetServerState | undefined = helmetContext?.helmet;
         const manager : HtmlManager = new HtmlManager(htmlString);
         if (!helmet) {
@@ -134,7 +135,9 @@ export class ReactServerController {
             manager.replaceNoScript(helmet.noscript.toString());
         }
         if (appString) {
-            manager.replaceContentById('div', 'root', appString);
+            manager.replaceContentById( 'div', 'root', appString );
+        } else {
+            LOG.warn(`Warning! No app rendered`);
         }
         return manager.toString();
     }
