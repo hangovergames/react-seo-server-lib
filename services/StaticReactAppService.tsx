@@ -8,7 +8,6 @@ import { I18nextProvider } from 'react-i18next';
 import { LogService } from "../../core/LogService";
 import { LogLevel } from "../../core/types/LogLevel";
 import { isString } from "../../core/types/String";
-import { HgReactContext } from "../../frontend/HgReactContext";
 import { HelmetContext } from "../../frontend/services/HelmetContextService";
 
 const LOG = LogService.createLogger('StaticReactAppService');

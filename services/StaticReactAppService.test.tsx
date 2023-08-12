@@ -2,7 +2,6 @@
 
 import { StaticReactAppService } from "./StaticReactAppService";
 import { LogLevel } from "../../core/types/LogLevel";
-import React from "react";
 
 StaticReactAppService.setLogLevel(LogLevel.NONE);
 
@@ -14,7 +13,7 @@ describe("StaticReactAppService", () => {
             const url = "/test";
             const App = () => <div>Test</div>;
             const expectedResult = "<div>Test</div>";
-            const result = StaticReactAppService.renderString(url, App);
+            const result = StaticReactAppService.renderString(url, App, {});
             expect(result).toBe(expectedResult);
         });
 

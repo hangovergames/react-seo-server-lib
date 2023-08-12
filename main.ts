@@ -3,6 +3,7 @@
 import { Server as HttpServer, createServer as createHttpServer, IncomingMessage, ServerResponse } from 'http';
 
 import { ProcessUtils } from "../core/ProcessUtils";
+import { RequestServerImpl } from "../node/RequestServerImpl";
 
 // Must be first import to define environment variables before anything else
 ProcessUtils.initEnvFromDefaultFiles();
@@ -24,7 +25,6 @@ LogService.setLogLevel(BACKEND_LOG_LEVEL);
 import { ExitStatus } from "./types/ExitStatus";
 import { LogLevel } from "../core/types/LogLevel";
 import { RequestClientImpl } from "../core/RequestClientImpl";
-import { RequestServer } from "../node/RequestServer";
 import { RequestRouterImpl } from "../core/requestServer/RequestRouterImpl";
 import { Headers } from "../core/request/types/Headers";
 import { HttpServerController } from "./controller/HttpServerController";
@@ -51,7 +51,7 @@ export async function main (
         Headers.setLogLevel(LogLevel.INFO);
         RequestRouterImpl.setLogLevel(LogLevel.DEBUG);
         RequestClientImpl.setLogLevel(LogLevel.INFO);
-        RequestServer.setLogLevel(LogLevel.DEBUG);
+        RequestServerImpl.setLogLevel(LogLevel.DEBUG);
         // SimpleMatrixClient.setLogLevel(LogLevel.INFO);
         // MatrixCrudRepository.setLogLevel(LogLevel.INFO);
 

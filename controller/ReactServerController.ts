@@ -8,7 +8,6 @@ import { LogService } from "../../core/LogService";
 import { StaticReactAppService } from "../services/StaticReactAppService";
 import { HelmetServerState } from "react-helmet-async";
 import { HtmlManager } from "../services/HtmlManager";
-import { VoidCallback } from "../../core/interfaces/callbacks";
 import { CacheService } from "../../core/CacheService";
 import { Html5 } from "../../core/html/Html5";
 
@@ -142,46 +141,46 @@ export class ReactServerController {
         return manager.toString();
     }
 
-    private static _waitUntilMs (time: number) : [Promise<void>, VoidCallback] {
-        let rejectPromise : any | undefined = undefined;
-        let timeout : any | undefined = undefined;
-        const cancel : VoidCallback = () => {
-            if (rejectPromise !== undefined) {
-                rejectPromise('cancel');
-                rejectPromise = undefined;
-            }
-            if (timeout !== undefined) {
-                clearTimeout(timeout);
-                timeout = undefined;
-            }
-        };
-        const promise : Promise<void> = new Promise((resolve, reject) => {
-            try {
-                rejectPromise = reject;
-                timeout = setTimeout(() => {
-                    try {
-
-                        if (timeout) {
-                            timeout = undefined;
-                        }
-
-                        if (rejectPromise) {
-                            rejectPromise = undefined;
-                        }
-
-                        resolve();
-
-                    } catch (err) {
-                        reject(err);
-                        rejectPromise = undefined;
-                    }
-                }, time);
-            } catch(err) {
-                reject(err);
-                rejectPromise = undefined;
-            }
-        });
-        return [ promise, cancel ];
-    }
+    // private static _waitUntilMs (time: number) : [Promise<void>, VoidCallback] {
+    //     let rejectPromise : any | undefined = undefined;
+    //     let timeout : any | undefined = undefined;
+    //     const cancel : VoidCallback = () => {
+    //         if (rejectPromise !== undefined) {
+    //             rejectPromise('cancel');
+    //             rejectPromise = undefined;
+    //         }
+    //         if (timeout !== undefined) {
+    //             clearTimeout(timeout);
+    //             timeout = undefined;
+    //         }
+    //     };
+    //     const promise : Promise<void> = new Promise((resolve, reject) => {
+    //         try {
+    //             rejectPromise = reject;
+    //             timeout = setTimeout(() => {
+    //                 try {
+    //
+    //                     if (timeout) {
+    //                         timeout = undefined;
+    //                     }
+    //
+    //                     if (rejectPromise) {
+    //                         rejectPromise = undefined;
+    //                     }
+    //
+    //                     resolve();
+    //
+    //                 } catch (err) {
+    //                     reject(err);
+    //                     rejectPromise = undefined;
+    //                 }
+    //             }, time);
+    //         } catch(err) {
+    //             reject(err);
+    //             rejectPromise = undefined;
+    //         }
+    //     });
+    //     return [ promise, cancel ];
+    // }
 
 }
